@@ -9,6 +9,7 @@ public class Item {
     private String unit;
     private double price;
     private int quantity;
+    private double discount;
 
     public Item(String barCode, String name, String unit, double price) {
 
@@ -17,6 +18,17 @@ public class Item {
         this.unit = unit;
         this.price = price;
         this.quantity=1;
+        this.discount=1;
+    }
+
+    public Item(String barCode, String name, String unit, double price,double discount) {
+
+        this.barCode = barCode;
+        this.name = name;
+        this.unit = unit;
+        this.price = price;
+        this.quantity=1;
+        this.discount=discount;
     }
 
     public String getName() {
@@ -37,5 +49,9 @@ public class Item {
 
     public void addQuantity(){
         quantity++;
+    }
+
+    public double getDiscount() {
+        return discount;
     }
 }

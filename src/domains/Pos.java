@@ -18,9 +18,10 @@ public class Pos {
             Item item = items.get(i);
             int amountOfItem = item.getQuantity();
             double priceOfItem = item.getPrice();
+            double discountOfItem=item.getDiscount();
             String nameOfItem = item.getName();
             String unitOfItem = item.getUnit();
-            double subTotal = priceOfItem * amountOfItem;
+            double subTotal = priceOfItem * amountOfItem*discountOfItem;
             total += subTotal;
             stringBuilder
                     .append("名称：").append(nameOfItem).append("，")
