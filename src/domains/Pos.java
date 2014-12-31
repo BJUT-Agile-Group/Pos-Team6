@@ -1,4 +1,4 @@
-package domains;
+﻿package domains;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ public class Pos {
     public String getShoppingList(ShoppingChart shoppingChart) {
         ArrayList<Item> items = shoppingChart.getItems();
         double total=0.0;
-        double save=0.0;
+        double save=0.00;
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("***商店购物清单***\n");
