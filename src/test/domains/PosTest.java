@@ -55,6 +55,7 @@ public void testGetShoppingList() throws Exception {
                     +"名称：电池，数量：1个，单价：2.00(元)，小计：1.60(元)\n"
                     + "----------------------\n"
                     + "总计：22.60(元)\n"
+                    +"节省：0.40(元)\n"
                     + "**********************\n";
     assertThat(actualShoppingList, is(expectedShoppingList));
 } 
