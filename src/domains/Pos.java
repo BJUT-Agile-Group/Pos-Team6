@@ -9,7 +9,6 @@ public class Pos {
     public String getShoppingList(ShoppingChart shoppingChart) {
         ArrayList<Item> items = shoppingChart.getItems();
         double total=0.0;
-        double save=0.0;
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("***商店购物清单***\n");
@@ -23,7 +22,6 @@ public class Pos {
             String nameOfItem = item.getName();
             String unitOfItem = item.getUnit();
             double subTotal = priceOfItem * amountOfItem*discountOfItem;
-            save+=priceOfItem * amountOfItem*(1-discountOfItem);
             total += subTotal;
             stringBuilder
                     .append("名称：").append(nameOfItem).append("，")
@@ -33,12 +31,8 @@ public class Pos {
         }
         stringBuilder
                 .append("----------------------\n")
-                .append("总计：").append(String.format("%.2f", total)).append("(元)").append("\n");
-        if(save!=0.0){
-            stringBuilder.append("节省：").append(String.format("%.2f", save)).append("(元)").append("\n");
-        }
-
-        stringBuilder.append("**********************\n");
+                .append("总计：").append(String.format("%.2f", total)).append("(元)").append("\n")
+                .append("**********************\n");
 
         return stringBuilder.toString();
     }
