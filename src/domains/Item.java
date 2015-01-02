@@ -11,6 +11,16 @@ public class Item {
     private int quantity;
     private double discount;
 
+    public double getDiscounttime() {
+        return discounttime;
+    }
+
+    public void setDiscounttime(double discounttime) {
+        this.discounttime = discounttime;
+    }
+
+    private double discounttime;
+
     public Item(String barCode, String name, String unit, double price) {
 
         this.barCode = barCode;
