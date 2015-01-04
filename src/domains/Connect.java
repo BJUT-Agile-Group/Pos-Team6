@@ -99,14 +99,31 @@ public class Connect {
                 String unit =rs.getString("unit");;
                 double price = rs.getDouble("price");
                 int quantity=rs.getInt("quantity");
-                double discount=rs.getDouble("discount");
-                Item item=new Item(barCode,name,unit,price,quantity,discount);
+                Item item=new Item(barCode,name,unit,price,quantity);
                 stock.add(item);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     return stock;
+    }
+
+    //根据商品编号查询商品库存数量，编号不存在能返回-1
+    public int checkQuantity(String barCode){
+        int quantity=-1;
+        String select_quantity="select quantity from item where barcode ="+barCode+"";
+        try {
+            stmt=con.createStatement();
+            rs=stmt.executeQuery(select_quantity);
+            while(rs.next()){
+                if(barCode==rs.getString("barcode")){
+                    quantity=rs.getInt("quantity");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return quantity;
     }
 
     //判断商品编号是否存在
@@ -143,7 +160,7 @@ public class Connect {
         double discount;
         Date start;
         Date end;
-        int judge;
+        boolean promotion;
         String select_match="select * from item where name="+item.getName()+"";
         try {
             stmt=con.createStatement();
@@ -156,7 +173,7 @@ public class Connect {
                 discount = rs.getDouble("discount");
                 start = rs.getDate("start");
                 end = rs.getDate("end");
-                judge = rs.getInt("judge");
+                promotion = rs.getBoolean("judge");
                 if(item.getBarCode() !=barCode){
                     a=false;
                     error
@@ -197,11 +214,11 @@ public class Connect {
                             .append("Result——discount doesn't matched;");
                     log(error);
                 }
-                if(item.getJudge()!=judge){
+                if(item.isPromotion()!=promotion){
                     a=false;
                     error
-                            .append("Input——"+item.getJudge()+",")
-                            .append("Output——"+judge)
+                            .append("Input——"+item.isPromotion()+",")
+                            .append("Output——" + promotion)
                             .append("Result——judge doesn't matched;");
                     log(error);
                 }
@@ -224,7 +241,7 @@ public class Connect {
         double discount;
         Date start;
         Date end;
-        int judge;
+        boolean promotion;
         String select_match="select * from item where barcode="+item.getBarCode()+"";
         try {
             stmt=con.createStatement();
@@ -237,7 +254,7 @@ public class Connect {
                 discount = rs.getDouble("discount");
                 start = rs.getDate("start");
                 end = rs.getDate("end");
-                judge = rs.getInt("judge");
+                promotion = rs.getBoolean("judge");
                 if (item.getName() != name) {
                     a = false;
                     error
@@ -278,11 +295,11 @@ public class Connect {
                             .append("Result——discount doesn't matched;");
                     log(error);
                 }
-                if (item.getJudge() != judge) {
+                if (item.isPromotion() != promotion) {
                     a = false;
                     error
-                            .append("Input——" + item.getJudge() + ",")
-                            .append("Output——" + judge)
+                            .append("Input——" + item.isPromotion() + ",")
+                            .append("Output——" + promotion)
                             .append("Result——judge doesn't matched;");
                     log(error);
                 }
