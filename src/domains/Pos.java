@@ -69,7 +69,7 @@ public class Pos {
             }
             return item.getQuantity()*item.getPrice()*item.getDiscount();
         }
-        else if((item.isPromotion()==true)&&item.getQuantity()>3){
+        else if((item.isPromotion()==true)&&item.getQuantity()>=3){
             //检查是否在活动期限之内
             if(false){
                 return item.getQuantity()*item.getPrice();
