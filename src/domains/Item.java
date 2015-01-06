@@ -52,6 +52,16 @@ public class Item {
         this.promotion=false;
     }
 
+    public Item(String barCode,String name, String unit, double price,int quantity,double discount,boolean promotion){
+        this.barCode = barCode;
+        this.name = name;
+        this.unit = unit;
+        this.price = price;
+        this.quantity=quantity;
+        this.discount=discount;
+        this.promotion=promotion;
+    }
+
     public String getName() {
         return name;
     }
