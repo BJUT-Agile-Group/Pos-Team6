@@ -21,16 +21,16 @@ public class Connect {
 
     //数据库连接
     public void connect(){
+        try {
             try {
-                try {
-                    Class.forName("com.mysql.jdbc.Driver");
-                    con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/lab", "root", "lzw0201");
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            } catch (SQLException e) {
+                Class.forName("com.mysql.jdbc.Driver");
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "");
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     //断开数据库连接
@@ -47,9 +47,9 @@ public class Connect {
 
     //生成错误内容报告log文件
     public void log(StringBuilder error){
-        StringBuilder log=null;
+        StringBuilder log=new StringBuilder();
         try {
-            File file=new File("errorLog.txt");
+            File file=new File("./errorLog.txt");
             if(!file.exists()){
                 file.createNewFile();
             }
@@ -61,10 +61,11 @@ public class Connect {
                     .append("【")
                     .append(dateFormat.format(calendar.getTime()))//记录当前系统时间
                     .append("】")
-                    .append("\n")
-                    .append("Error："+error)
-                    .append("\n");
+//                    .append("\r\n")
+                    .append("Error：" + error)
+                    .append("\r\n");
             bufferedWriter.write(String.valueOf(log));
+            bufferedWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,7 +87,7 @@ public class Connect {
         return 0;
     }
 
-    //查询库存商品
+    //查询库存商品,返回全部商品信息
     public List checkStock(){
         List<Item> stock = new ArrayList<Item>();
         String select_all="select * from Item";
@@ -96,7 +97,7 @@ public class Connect {
             while(rs.next()){
                 String barCode = rs.getString("barcode");
                 String name =rs.getString("name");
-                String unit =rs.getString("unit");;
+                String unit =rs.getString("unit");
                 double price = rs.getDouble("price");
                 int quantity=rs.getInt("quantity");
                 Item item=new Item(barCode,name,unit,price,quantity);
@@ -105,20 +106,39 @@ public class Connect {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    return stock;
+        return stock;
+    }
+
+    //根据商品编号返回该商品的全部信息，返回值为Item对象
+    public Item checkByBarCode(String barCode){
+        String select_item="select * from item where barcode ='"+barCode+"'";
+        Item item=new Item(null,null,null,0,0);
+        try {
+            stmt=con.createStatement();
+            rs=stmt.executeQuery(select_item);
+            if(rs.next()){
+                String name =rs.getString("name");
+                String unit =rs.getString("unit");
+                double price = rs.getDouble("price");
+                int quantity=rs.getInt("quantity");
+                item=new Item(barCode,name,unit,price,quantity);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return item;
     }
 
     //根据商品编号查询商品库存数量，编号不存在能返回-1
     public int checkQuantity(String barCode){
         int quantity=-1;
-        String select_quantity="select quantity from item where barcode ="+barCode+"";
+        String select_quantity="select quantity ,barcode from item where barcode ='"+barCode+"'";
         try {
             stmt=con.createStatement();
             rs=stmt.executeQuery(select_quantity);
-            while(rs.next()){
-                if(barCode==rs.getString("barcode")){
-                    quantity=rs.getInt("quantity");
-                }
+            rs.next();
+            if(rs.getString("barcode").equals(barCode)){
+                quantity=rs.getInt("quantity");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -129,17 +149,18 @@ public class Connect {
     //判断商品编号是否存在
     public boolean checkCode(String barCode) {
         boolean a=false;
-        StringBuilder error=null;
-        String select_code = "select * from item where barcode=" + barCode + "";
+        StringBuilder error=new StringBuilder();
+        String select_code = "select * from item where barcode='" +barCode + "'";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(select_code);
-            if (rs.getString("barcode") == barCode)
-                a= true;
+            if( rs.next()){
+                if (rs.getString("barcode").equals(barCode))
+                    a = true;
+            }
             else{
-                error
-                        .append("Input——"+barCode+",")
-                        .append("Result——barcode doesn't exist;");
+                error.append("Input——"+barCode+",")
+                        .append("Result——barcode doesn't exist;\r\n");
                 log(error);
             }
         } catch (SQLException e) {
@@ -148,101 +169,18 @@ public class Connect {
         return a;
     }
 
-    //根据商品名称判断该商品的其他信息是否与输入的匹配
-    public boolean matchByName(Item item){
-        boolean a=true;
-        int i=0;
-        StringBuilder error=null;
-        String barCode;
-        String unit;
-        double price;
-        int quantity;
-        double discount;
-        Date start;
-        Date end;
-        boolean promotion;
-        String select_match="select * from item where name="+item.getName()+"";
-        try {
-            stmt=con.createStatement();
-            rs=stmt.executeQuery(select_match);
-            while(rs.next()){
-                barCode = rs.getString("barcode");
-                unit = rs.getString("unit");
-                price = rs.getDouble("price");
-                quantity = rs.getInt("quantity");
-                discount = rs.getDouble("discount");
-                start = rs.getDate("start");
-                end = rs.getDate("end");
-                promotion = rs.getBoolean("judge");
-                if(item.getBarCode() !=barCode){
-                    a=false;
-                    error
-                            .append("Input——"+item.getBarCode()+",")
-                            .append("Output——"+barCode)
-                            .append("Result——barcode doesn't matched;");
-                    log(error);
-                }
-                if(item.getUnit()!=unit){
-                    a=false;
-                    error
-                            .append("Input——"+item.getUnit()+",")
-                            .append("Output——" + unit)
-                            .append("Result——unit doesn't matched;");
-                    log(error);
-                }
-                if(item.getPrice()!=price){
-                    a=false;
-                    error
-                            .append("Input——"+item.getPrice()+",")
-                            .append("Output——" + price)
-                            .append("Result——price doesn't matched;");
-                    log(error);
-                }
-                if(item.getQuantity()!=quantity){
-                    a=false;
-                    error
-                            .append("Input——"+item.getQuantity()+",")
-                            .append("Output——"+quantity)
-                            .append("Result——quantity doesn't matched;");
-                    log(error);
-                }
-                if(item.getDiscount()!=discount){
-                    a=false;
-                    error
-                            .append("Input——"+item.getDiscount()+",")
-                            .append("Output——"+discount)
-                            .append("Result——discount doesn't matched;");
-                    log(error);
-                }
-                if(item.isPromotion()!=promotion){
-                    a=false;
-                    error
-                            .append("Input——"+item.isPromotion()+",")
-                            .append("Output——" + promotion)
-                            .append("Result——judge doesn't matched;");
-                    log(error);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return a;
-    }
 
     //根据商品编号判断该商品的其他信息是否与输入的匹配
     public boolean matchByBarcode(Item item){
         boolean a=true;
         int i=0;
-        StringBuilder error=null;
+        StringBuilder error=new StringBuilder();
         String name;
         String unit;
         double price;
-        int quantity;
         double discount;
-        Date start;
-        Date end;
         boolean promotion;
-        String select_match="select * from item where barcode="+item.getBarCode()+"";
+        String select_match="select * from item where barcode='"+item.getBarCode()+"'";
         try {
             stmt=con.createStatement();
             rs=stmt.executeQuery(select_match);
@@ -250,59 +188,45 @@ public class Connect {
                 name = rs.getString("name");
                 unit = rs.getString("unit");
                 price = rs.getDouble("price");
-                quantity = rs.getInt("quantity");
                 discount = rs.getDouble("discount");
-                start = rs.getDate("start");
-                end = rs.getDate("end");
                 promotion = rs.getBoolean("judge");
-                if (item.getName() != name) {
+                if (!item.getName().equals(name)) {
                     a = false;
                     error
                             .append("Input——" + item.getName() + ",")
-                            .append("Output——" + name)
-                            .append("Result——name doesn't matched;");
-                    log(error);
+                            .append("Output——" + name+",")
+                            .append("Result——name doesn't matched;\r\n");
                 }
-                if (item.getUnit() != unit) {
+                if (!item.getUnit().equals(unit)) {
                     a = false;
                     error
                             .append("Input——" + item.getUnit() + ",")
-                            .append("Output——" + unit)
-                            .append("Result——unit doesn't matched;");
-                    log(error);
+                            .append("Output——" + unit+",")
+                            .append("Result——unit doesn't matched;\r\n");
                 }
                 if (item.getPrice() != price) {
                     a = false;
                     error
                             .append("Input——" + item.getPrice() + ",")
-                            .append("Output——" + price)
-                            .append("Result——price doesn't matched;");
-                    log(error);
-                }
-                if (item.getQuantity() != quantity) {
-                    a = false;
-                    error
-                            .append("Input——" + item.getQuantity() + ",")
-                            .append("Output——" + quantity)
-                            .append("Result——quantity doesn't matched;");
-                    log(error);
+                            .append("Output——" + price+",")
+                            .append("Result——price doesn't matched;\r\n");
                 }
                 if (item.getDiscount() != discount) {
                     a = false;
                     error
                             .append("Input——" + item.getDiscount() + ",")
-                            .append("Output——" + discount)
-                            .append("Result——discount doesn't matched;");
-                    log(error);
+                            .append("Output——" + discount+",")
+                            .append("Result——discount doesn't matched;\r\n");
                 }
                 if (item.isPromotion() != promotion) {
                     a = false;
                     error
                             .append("Input——" + item.isPromotion() + ",")
-                            .append("Output——" + promotion)
-                            .append("Result——judge doesn't matched;");
-                    log(error);
+                            .append("Output——" + promotion+",")
+                            .append("Result——judge doesn't matched;\r\n");
+
                 }
+                log(error);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -318,7 +242,7 @@ public class Connect {
         String inputTime=simpleDateFormat.format(date);
         Date start;
         Date end;
-        String select_check_discount="select start,end from item where name="+item.getName()+"";
+        String select_check_discount="select start,end from item where name='"+item.getName()+"'";
         try {
             stmt=con.createStatement();
             rs=stmt.executeQuery(select_check_discount);
@@ -331,7 +255,7 @@ public class Connect {
                 }else{
                     error
                             .append("Input——"+inputTime+",")
-                            .append("Result——discount timeover;");
+                            .append("Result——discount timeover;\r\n");
                     log(error);
                 }
             }
