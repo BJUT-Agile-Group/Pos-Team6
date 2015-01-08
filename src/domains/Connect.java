@@ -140,15 +140,20 @@ public class Connect {
 
     //根据商品编号查询商品库存数量，编号不存在能返回-1
     public int checkQuantity(String barCode){
+        StringBuilder error=new StringBuilder();
         int quantity=-1;
         String select_quantity="select quantity ,barcode from item where barcode ='"+barCode+"'";
         try {
             stmt=con.createStatement();
             rs=stmt.executeQuery(select_quantity);
-            rs.next();
-                if(rs.getString("barcode").equals(barCode)){
+            if(rs.next()&&rs.getString("barcode").equals(barCode))
                     quantity=rs.getInt("quantity");
+            else{
+                error
+                        .append("Input——"+barCode+",")
+                        .append("Result——barcode doesn't exist;\r\n");
             }
+            log(error);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -283,6 +288,7 @@ public class Connect {
     * */
     //根据会员编号返回现有积分
     public int checkPoints(String user){
+        StringBuilder error=new StringBuilder();
         int points=0;
         String select_points="select points from member where user = '"+user+"'";
         try {
@@ -290,8 +296,13 @@ public class Connect {
             rs=stmt.executeQuery(select_points);
             if(rs.next())
                 points=rs.getInt("points");
-            else
+            else{
                 points=-1;
+                error
+                        .append("Input——"+user+",")
+                        .append("Result—— user doesn't exist;\r\n");
+            }
+            log(error);
         } catch (SQLException e) {
             e.printStackTrace();
         }
