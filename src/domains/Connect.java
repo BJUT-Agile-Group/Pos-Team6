@@ -103,7 +103,10 @@ public class Connect {
                 String unit =rs.getString("unit");
                 double price = rs.getDouble("price");
                 int quantity=rs.getInt("quantity");
-                Item item=new Item(barCode,name,unit,price,quantity);
+                double vipDiscount=rs.getDouble("vipdiscount");
+                double discount=rs.getDouble("discount");
+                boolean promotion=rs.getBoolean("promotion");
+                Item item=new Item(barCode,name,unit,price,quantity,discount,promotion,vipDiscount);
                 stock.add(item);
             }
         } catch (SQLException e) {
@@ -115,7 +118,7 @@ public class Connect {
     //根据商品编号返回该商品的全部信息，返回值为Item对象
     public Item checkByBarCode(String barCode){
         String select_item="select * from item where barcode ='"+barCode+"'";
-        Item item=new Item(null,null,null,0,0);
+        Item item=new Item(null,null,null,0,0,true,0);
         try {
             stmt=con.createStatement();
             rs=stmt.executeQuery(select_item);
@@ -124,7 +127,10 @@ public class Connect {
                 String unit =rs.getString("unit");
                 double price = rs.getDouble("price");
                 int quantity=rs.getInt("quantity");
-                item=new Item(barCode,name,unit,price,quantity);
+                double vipDiscount=rs.getDouble("vipdiscount");
+                double discount=rs.getDouble("discount");
+                boolean promotion=rs.getBoolean("promotion");
+                item=new Item(barCode,name,unit,price,quantity,discount,promotion,vipDiscount);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -178,21 +184,17 @@ public class Connect {
         boolean a=true;
         int i=0;
         StringBuilder error=new StringBuilder();
-        String name;
-        String unit;
-        double price;
-        double discount;
-        boolean promotion;
         String select_match="select * from item where barcode='"+item.getBarCode()+"'";
         try {
             stmt=con.createStatement();
             rs=stmt.executeQuery(select_match);
             while(rs.next()) {
-                name = rs.getString("name");
-                unit = rs.getString("unit");
-                price = rs.getDouble("price");
-                discount = rs.getDouble("discount");
-                promotion = rs.getBoolean("judge");
+                String name = rs.getString("name");
+                String unit = rs.getString("unit");
+                double price = rs.getDouble("price");
+                double discount = rs.getDouble("discount");
+                boolean promotion = rs.getBoolean("judge");
+                double vipDiscount=rs.getDouble("vipdiscount");
                 if (!item.getName().equals(name)) {
                     a = false;
                     error
@@ -227,6 +229,14 @@ public class Connect {
                             .append("Input——" + item.isPromotion() + ",")
                             .append("Output——" + promotion+",")
                             .append("Result——judge doesn't matched;\r\n");
+
+                }
+                if (item.getVipDiscount() != vipDiscount) {
+                    a = false;
+                    error
+                            .append("Input——" + item.getVipDiscount() + ",")
+                            .append("Output——" + vipDiscount+",")
+                            .append("Result——vipdiscount doesn't matched;\r\n");
 
                 }
                 log(error);
@@ -280,6 +290,8 @@ public class Connect {
             rs=stmt.executeQuery(select_points);
             if(rs.next())
                 points=rs.getInt("points");
+            else
+                points=-1;
         } catch (SQLException e) {
             e.printStackTrace();
         }

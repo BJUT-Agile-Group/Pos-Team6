@@ -16,36 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `item`
+-- Table structure for table `member`
 --
 
-DROP TABLE IF EXISTS `item`;
+DROP TABLE IF EXISTS `member`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `item` (
-  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `barcode` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `unit` varchar(45) NOT NULL,
-  `price` double NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `discount` double DEFAULT NULL,
-  `start` date DEFAULT NULL,
-  `end` date DEFAULT NULL,
-  `judge` tinyint(4) DEFAULT NULL,
-  `vipdiscount` double DEFAULT NULL,
+CREATE TABLE `member` (
+  `id` int(11) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `user` varchar(45) DEFAULT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `isVip` tinyint(4) DEFAULT NULL,
+  `points` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `item`
+-- Dumping data for table `member`
 --
 
-LOCK TABLES `item` WRITE;
-/*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (0000000001,'ITEM000000','可口可乐','瓶',3,30,1,'2014-01-01','2014-12-31',1,0.9),(0000000002,'ITEM000001','雪碧','瓶',3,10,1,'2014-01-01','2014-12-31',1,0.9),(0000000003,'ITEM000002','电池','个',2,10,1,'2014-01-01','2014-12-31',1,0.75),(0000000004,'ITEM000003','牙膏','支',10,10,0.9,'2014-04-01','2014-04-30',0,1),(0000000005,'ITEM000004','洗发液','瓶',40,20,0.8,'2014-05-01','2014-05-31',0,0.85),(0000000006,'ITEM000005','CD','张',10,10,0.5,'2014-06-01','2014-06-30',0,0.9),(0000000007,'ITEM000006','彩虹糖','罐',4,10,0.9,'2014-07-01','2014-07-31',0,0.95),(0000000008,'ITEM000007','奥利奥','盒',10,20,0.7,'2014-08-01','2014-08-31',0,1),(0000000009,'ITEM000008','趣多多','盒',12,10,0.8,'2014-09-01','2014-09-30',0,1),(0000000010,'ITEM000009','纯牛奶','箱',60,10,1,'2014-01-01','2014-12-31',1,1),(0000000011,'ITEM000010','纸巾','包',15,10,0.9,'2014-10-01','2014-10-31',0,0.8);
-/*!40000 ALTER TABLE `item` ENABLE KEYS */;
+LOCK TABLES `member` WRITE;
+/*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES (00000000001,'USER000002','NAME00002',0,180),(00000000002,'USER000003','NAME00003',1,0),(00000000003,'USER000004','NAME00004',0,200),(00000000004,'USER000005','NAME00005',1,0),(00000000005,'USER000006','NAME00006',0,500),(00000000006,'USER000007','NAME00007',0,600),(00000000007,'USER000008','NAME00008',1,280),(00000000010,'USER000001','NAME00001',0,100);
+/*!40000 ALTER TABLE `member` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -61,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-08 16:07:07
+-- Dump completed on 2015-01-08 21:14:42
