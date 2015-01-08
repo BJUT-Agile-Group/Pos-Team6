@@ -10,6 +10,7 @@ public class Item {
     private double price;
     private int quantity;
     private double discount;
+    private double VIPdiscount;
     private boolean promotion;
 
     public Item(String barCode,String name, String unit, double price) {
@@ -19,6 +20,7 @@ public class Item {
         this.price = price;
         this.quantity=1;
         this.discount=1;
+        this.VIPdiscount=1;
         this.promotion=false;
     }
 
@@ -29,6 +31,18 @@ public class Item {
         this.price = price;
         this.quantity=1;
         this.discount=discount;
+        this.VIPdiscount=1;
+        this.promotion=false;
+    }
+
+    public Item( String barCode,String name, String unit, double price,double discount,double VIPdiscount){
+        this.barCode = barCode;
+        this.name = name;
+        this.unit = unit;
+        this.price = price;
+        this.quantity=1;
+        this.discount=discount;
+        this.VIPdiscount=VIPdiscount;
         this.promotion=false;
     }
 
@@ -39,6 +53,7 @@ public class Item {
         this.price = price;
         this.quantity=1;
         this.discount=1;
+        this.VIPdiscount=1;
         this.promotion=promotion;
     }
 
@@ -50,16 +65,6 @@ public class Item {
         this.quantity=quantity;
         this.discount=1;
         this.promotion=false;
-    }
-
-    public Item(String barCode,String name, String unit, double price,int quantity,double discount,boolean promotion){
-        this.barCode = barCode;
-        this.name = name;
-        this.unit = unit;
-        this.price = price;
-        this.quantity=quantity;
-        this.discount=discount;
-        this.promotion=promotion;
     }
 
     public String getName() {
@@ -84,12 +89,12 @@ public class Item {
 
     public boolean isPromotion() {
         return promotion;
-
     }
 
     public void subQuantity(){
         quantity--;
     }
+
     public double getDiscount() {
         return discount;
     }
@@ -97,4 +102,7 @@ public class Item {
     public String getBarCode() {
         return barCode;
     }
+
+    public double getVIPdiscount() {return VIPdiscount;}
+
 }
