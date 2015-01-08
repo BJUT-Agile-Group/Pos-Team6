@@ -61,14 +61,10 @@ public class ReadList {
         Map<String,ArrayList<String>> list=this.getListOfGoods();
 
         if(list.get("user")==null){
-            for(int i=0;i<list.size();i++){
-                if(maps.get(list.get(i))==null){
-                    //抛出空异常
-                }
-                shoppingChart.add(maps.get(list.get(i)));
-            }
             shoppingChart.setUserName("NULL");
-            return shoppingChart;
+        }
+        else{
+            shoppingChart.setUserName(list.get("user").get(0));
         }
 
         for(int i=0;i<list.get("items").size();i++){
@@ -77,7 +73,6 @@ public class ReadList {
             }
             shoppingChart.add(maps.get(list.get("items").get(i)));
         }
-        shoppingChart.setUserName(list.get("user").get(0));
 
         return shoppingChart;
     }
@@ -86,9 +81,22 @@ public class ReadList {
         String textInput = FileUtils.readFileToString(list);
         Map<String,ArrayList<String>> listOfGoods=new HashMap<String, ArrayList<String>>();
         //ArrayList<Item> indexOfGoods=new ArrayList<Item>();
-        //ArrayList<String> listOfGoods=new ArrayList<String>();
-        listOfGoods = objectMapper.readValue(textInput, Map.class);
-        return listOfGoods;
+        ArrayList<String> list=new ArrayList<String>();
+        //listOfGoods = objectMapper.readValue(textInput, Map.class);
+        //return listOfGoods;
+
+        try {
+            listOfGoods = objectMapper.readValue(textInput, Map.class);
+
+        }
+        catch (Exception exception){
+            list=objectMapper.readValue(textInput, ArrayList.class);
+            listOfGoods.put("items",list);
+
+        }
+        finally {
+            return listOfGoods;
+        }
     }
 
 }
