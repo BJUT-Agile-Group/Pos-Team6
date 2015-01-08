@@ -87,6 +87,9 @@ public class Connect {
         return 0;
     }
 
+    /*
+    * 以下为关于item数据表的操作
+    * */
     //查询库存商品,返回全部商品信息
     public List checkStock(){
         List<Item> stock = new ArrayList<Item>();
@@ -137,8 +140,8 @@ public class Connect {
             stmt=con.createStatement();
             rs=stmt.executeQuery(select_quantity);
             rs.next();
-            if(rs.getString("barcode").equals(barCode)){
-                quantity=rs.getInt("quantity");
+                if(rs.getString("barcode").equals(barCode)){
+                    quantity=rs.getInt("quantity");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -154,13 +157,13 @@ public class Connect {
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(select_code);
-            if( rs.next()){
-                if (rs.getString("barcode").equals(barCode))
+           if( rs.next()){
+               if (rs.getString("barcode").equals(barCode))
                     a = true;
-            }
-            else{
+           }
+           else{
                 error.append("Input——"+barCode+",")
-                        .append("Result——barcode doesn't exist;\r\n");
+                     .append("Result——barcode doesn't exist;\r\n");
                 log(error);
             }
         } catch (SQLException e) {
@@ -264,4 +267,33 @@ public class Connect {
         }
         return a;
     }
-}
+
+    /*
+    * 以下为member数据表的操作
+    * */
+    //根据会员编号返回现有积分
+    public int checkPoints(String user){
+        int points=0;
+        String select_points="select points from member where user = '"+user+"'";
+        try {
+            stmt=con.createStatement();
+            rs=stmt.executeQuery(select_points);
+            if(rs.next())
+                points=rs.getInt("points");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return points;
+    }
+
+    //根据会员编号更改积分
+    public void updatePoints(String user,int points){
+        String update_points="update table member set points = "+points+" where user ='"+user+"'";
+        try {
+            stmt=con.createStatement();
+            stmt.executeUpdate(update_points);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+ }
