@@ -147,7 +147,7 @@ public class Connect {
             stmt=con.createStatement();
             rs=stmt.executeQuery(select_quantity);
             if(rs.next()&&rs.getString("barcode").equals(barCode))
-                    quantity=rs.getInt("quantity");
+                quantity=rs.getInt("quantity");
             else{
                 error
                         .append("Input——"+barCode+",")
