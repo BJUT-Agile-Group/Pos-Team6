@@ -38,15 +38,23 @@ public class ReadList {
                 String name = maps.get(field).get("name").toString();
                 String unit = maps.get(field).get("unit").toString();
                 double price = Double.parseDouble(maps.get(field).get("price").toString());
+                double discount=1;
+                double vipDiscount=1;
+                boolean isPromotion=false;
                 if(maps.get(field).containsKey("discount")){
-                    indexOfGoods.put(field,new Item(field,name,unit,price,Double.parseDouble(maps.get(field).get("discount").toString())));
+                    //indexOfGoods.put(field,new Item(field,name,unit,price,Double.parseDouble(maps.get(field).get("discount").toString())));
+                    discount=Double.parseDouble(maps.get(field).get("discount").toString());
                 }
-                else if(maps.get(field).containsKey("promotion")){
-                    indexOfGoods.put(field,new Item(field,name,unit,price,Boolean.parseBoolean(maps.get(field).get("promotion").toString())));
+                if(maps.get(field).containsKey("vipDiscount")){
+                    vipDiscount=Double.parseDouble(maps.get(field).get("vipDiscount").toString());
                 }
-                else {
-                    indexOfGoods.put(field,new Item(field,name,unit,price));
+                if(maps.get(field).containsKey("promotion")) {
+                    //indexOfGoods.put(field,new Item(field, name, unit, price, Boolean.parseBoolean(maps.get(field).get("promotion").toString())));
+                    isPromotion = Boolean.parseBoolean(maps.get(field).get("promotion").toString());
                 }
+
+                indexOfGoods.put(field,new Item(field,name,unit,price,discount,isPromotion,vipDiscount));
+
             }
         }catch (Exception exception) {
             exception.printStackTrace();
