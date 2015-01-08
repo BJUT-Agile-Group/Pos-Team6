@@ -58,20 +58,37 @@ public class ReadList {
 
     private ShoppingChart BuildShoppingChart(Map<String,Item> maps) throws IOException {
         ShoppingChart shoppingChart = new ShoppingChart();
-        ArrayList<String> list1=this.getListOfGoods();
+        Map<String,ArrayList<String>> list=this.getListOfGoods();
 
-        for(int i=0;i<list1.size();i++){
-            shoppingChart.add(maps.get(list1.get(i)));
+        if(list.get("user")==null){
+            for(int i=0;i<list.size();i++){
+                if(maps.get(list.get(i))==null){
+                    //抛出空异常
+                }
+                shoppingChart.add(maps.get(list.get(i)));
+            }
+            shoppingChart.setUserName("NULL");
+            return shoppingChart;
         }
+
+        for(int i=0;i<list.get("items").size();i++){
+            if(maps.get(list.get("items"))==null){
+                //抛出空异常
+            }
+            shoppingChart.add(maps.get(list.get("items").get(i)));
+        }
+        shoppingChart.setUserName(list.get("user").get(0));
 
         return shoppingChart;
     }
 
-    private ArrayList<String> getListOfGoods() throws IOException{
+    private Map<String,ArrayList<String>> getListOfGoods() throws IOException{
         String textInput = FileUtils.readFileToString(list);
+        Map<String,ArrayList<String>> listOfGoods=new HashMap<String, ArrayList<String>>();
         //ArrayList<Item> indexOfGoods=new ArrayList<Item>();
-        ArrayList<String> listOfGoods = objectMapper.readValue(textInput, ArrayList.class);
-
+        //ArrayList<String> listOfGoods=new ArrayList<String>();
+        listOfGoods = objectMapper.readValue(textInput, Map.class);
         return listOfGoods;
     }
+
 }
