@@ -24,7 +24,7 @@ public class Connect {
         try {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "");
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "silly");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -129,7 +129,7 @@ public class Connect {
                 int quantity=rs.getInt("quantity");
                 double vipDiscount=rs.getDouble("vipdiscount");
                 double discount=rs.getDouble("discount");
-                boolean promotion=rs.getBoolean("promotion");
+                boolean promotion=rs.getBoolean("judge");
                 item=new Item(barCode,name,unit,price,quantity,discount,promotion,vipDiscount);
             }
         } catch (SQLException e) {
@@ -311,7 +311,8 @@ public class Connect {
 
     //根据会员编号更改积分
     public void updatePoints(String user,int points){
-        String update_points="update table member set points = "+points+" where user ='"+user+"'";
+        String update_points="update member set points = "+points+" where user ='"+user+"'";
+        String s="UPDATE `test`.`member` SET `points`='103' WHERE `id`='00000000010';";
         try {
             stmt=con.createStatement();
             stmt.executeUpdate(update_points);

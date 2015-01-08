@@ -110,4 +110,8 @@ public class Item {
     public String getBarCode() {
         return barCode;
     }
+
+    public double getVipDiscount() {
+        return vipDiscount;
+    }
 }

@@ -1,5 +1,6 @@
 package domains;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,15 +10,16 @@ import java.util.Date;
  */
 public class Pos {
     ArrayList<Item> giftProduct=new ArrayList<Item>();
+    Connect con=new Connect();
 
-    public String getShoppingList(ShoppingChart shoppingChart) {
+    public String getShoppingList(ShoppingChart shoppingChart) throws IOException {
         ArrayList<Item> items = shoppingChart.getItems();
         double total=0.0;
         double save=0.0;
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("***商店购物清单***\n")
-                .append("打印时间：")
+        //stringBuilder.append("***商店购物清单***\n");
+        stringBuilder.append("打印时间：")
                 .append(this.timeOfPrint())
                 .append("\n")
                 .append("----------------------\n");
@@ -55,9 +57,11 @@ public class Pos {
         if(save!=0.0){
             stringBuilder.append("节省：").append(String.format("%.2f", save)).append("(元)").append("\n");
         }
-
         stringBuilder.append("**********************\n");
 
+        if(shoppingChart.getUserName()!="NULL"){
+            stringBuilder.insert(0,this.getUserInformation(shoppingChart.getUserName(),total));
+        }
         return stringBuilder.toString();
     }
 
@@ -67,7 +71,10 @@ public class Pos {
             if(false){
                 return item.getQuantity()*item.getPrice();
             }
-            return item.getQuantity()*item.getPrice()*item.getDiscount();
+            return item.getQuantity()*item.getPrice()*item.getDiscount()*item.getVipDiscount();
+        }
+        else if(item.getVipDiscount()!=1){
+            return item.getQuantity()*item.getPrice()*item.getVipDiscount();
         }
         else if((item.isPromotion()==true)&&item.getQuantity()>=3){
             //检查是否在活动期限之内
@@ -88,4 +95,38 @@ public class Pos {
         DateFormat d5 = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL); //显示日期，周，时间（精确到秒）
         return d5.format(d);
     }
+
+    //会员名和积分
+    public String getUserInformation(String name,double total){
+        StringBuilder stringBuilder=new StringBuilder();
+        stringBuilder.append("会员编号：").append(name).append("    会员积分：");
+        int point=0;
+        this.con.connect();
+
+        int points=con.checkPoints(name);
+
+        if(points==-1){
+            return null;
+        }
+        if(points<=200){
+            double a=Math.floor(total/5);
+            point=(int)a;
+            stringBuilder.append((points+point));
+        }
+        else if(points<=500){
+            double a=Math.floor(total/5)*3;
+            point=(int)a;
+            stringBuilder.append((points+point));
+        }
+        else{
+            double a=Math.floor(total/5)*5;
+            point=(int)a;
+            stringBuilder.append((points+point));
+        }
+        con.updatePoints(name,points+point);
+        stringBuilder.append("分\n----------------------\n");
+        con.disconnect();
+        return stringBuilder.toString();
+    }
+
 }
