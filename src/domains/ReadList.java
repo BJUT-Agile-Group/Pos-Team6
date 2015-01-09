@@ -68,6 +68,10 @@ public class ReadList {
         ShoppingChart shoppingChart = new ShoppingChart();
         Map<String,ArrayList<String>> list=this.getListOfGoods();
 
+        if(list.size()==0){
+            System.out.println(0);
+        }
+
         if(list.get("user")==null){
             shoppingChart.setUserName("NULL");
         }
@@ -95,14 +99,15 @@ public class ReadList {
 
         try {
             listOfGoods = objectMapper.readValue(textInput, Map.class);
-
+            //System.out.println("hhh");
         }
         catch (Exception exception){
             list=objectMapper.readValue(textInput, ArrayList.class);
             listOfGoods.put("items",list);
-
+            //System.out.println("hhh");
         }
         finally {
+            //System.out.println("hhhyh");
             return listOfGoods;
         }
     }

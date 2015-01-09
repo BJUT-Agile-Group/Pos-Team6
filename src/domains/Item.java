@@ -21,6 +21,7 @@ public class Item {
         this.quantity=1;
         this.discount=1;
         this.promotion=false;
+        this.vipDiscount=1;
     }
 
     public Item( String barCode,String name, String unit, double price,double discount) {
@@ -31,6 +32,7 @@ public class Item {
         this.quantity=1;
         this.discount=discount;
         this.promotion=false;
+        this.vipDiscount=1;
     }
 
     public Item(String barCode,String name, String unit, double price,boolean promotion) {
@@ -41,6 +43,7 @@ public class Item {
         this.quantity=1;
         this.discount=1;
         this.promotion=promotion;
+        this.vipDiscount=1;
     }
 
     public Item(String barCode,String name, String unit, double price,int quantity){
@@ -51,6 +54,7 @@ public class Item {
         this.quantity=quantity;
         this.discount=1;
         this.promotion=false;
+        this.vipDiscount=1;
     }
 
     public Item(String barCode,String name, String unit, double price,int quantity,double discount,boolean promotion,double vipDiscount){

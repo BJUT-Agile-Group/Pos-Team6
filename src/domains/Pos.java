@@ -31,7 +31,7 @@ public class Pos {
             double discountOfItem=item.getDiscount();
             String nameOfItem = item.getName();
             String unitOfItem = item.getUnit();
-            double subTotal = this.calSubTotal(item);
+            double subTotal = this.calSubTotal(item,shoppingChart.getUserName());
             save+=priceOfItem * amountOfItem-subTotal;
             total += subTotal;
             stringBuilder
@@ -62,31 +62,51 @@ public class Pos {
         if(shoppingChart.getUserName()!="NULL"){
             stringBuilder.insert(0,this.getUserInformation(shoppingChart.getUserName(),total));
         }
+        stringBuilder.insert(0,"***商店购物清单***\n");
         return stringBuilder.toString();
     }
 
-    private double calSubTotal(Item item){
-        if(item.getDiscount()!=1){
-            //检查是否在活动期限之内
-            if(false){
-                return item.getQuantity()*item.getPrice();
+    private double calSubTotal(Item item,String name){
+        if(name=="NULL"){
+            if(item.getDiscount()!=1){
+                //检查是否在活动期限之内
+                if(false){
+                    return item.getQuantity()*item.getPrice();
+                }
+                return item.getQuantity()*item.getPrice()*item.getDiscount();
             }
-            return item.getQuantity()*item.getPrice()*item.getDiscount()*item.getVipDiscount();
-        }
-        else if(item.getVipDiscount()!=1){
-            return item.getQuantity()*item.getPrice()*item.getVipDiscount();
-        }
-        else if((item.isPromotion()==true)&&item.getQuantity()>=3){
-            //检查是否在活动期限之内
-            if(false){
-                return item.getQuantity()*item.getPrice();
+            else if((item.isPromotion()==true)&&item.getQuantity()>=3){
+                //检查是否在活动期限之内
+                if(false){
+                    return item.getQuantity()*item.getPrice();
+                }
+                giftProduct.add(item);
+                return (item.getQuantity()-1)*item.getPrice();
+            } else {
+                return item.getQuantity() * item.getPrice();
             }
-            giftProduct.add(item);
-            return (item.getQuantity()-1)*item.getPrice();
         }
         else {
-            return item.getQuantity()*item.getPrice();
+            if (item.getDiscount() != 1) {
+                //检查是否在活动期限之内
+                if (false) {
+                    return item.getQuantity() * item.getPrice();
+                }
+                return item.getQuantity() * item.getPrice() * item.getDiscount() * item.getVipDiscount();
+            } else if (item.getVipDiscount() != 1) {
+                return item.getQuantity() * item.getPrice() * item.getVipDiscount();
+            } else if ((item.isPromotion() == true) && item.getQuantity() >= 3) {
+                //检查是否在活动期限之内
+                if (false) {
+                    return item.getQuantity() * item.getPrice();
+                }
+                giftProduct.add(item);
+                return (item.getQuantity() - 1) * item.getPrice();
+            } else {
+                return item.getQuantity() * item.getPrice();
+            }
         }
+        //return 0;
     }
 
     //获取当前时间

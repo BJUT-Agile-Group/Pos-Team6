@@ -7,7 +7,12 @@ import java.util.ArrayList;
  */
 public class ShoppingChart {
     private ArrayList<Item> items = new ArrayList<Item>();
+    private Connect con=new Connect();
+    private String userName="NULL";
 
+    public ShoppingChart(){
+        con.connect();
+    }
     //单个添加
     public int add(Item item) {
 
@@ -47,6 +52,9 @@ public class ShoppingChart {
         }
         if(isExist==false){
             this.items.add(item);
+            for(int j=1;j<count;j++){
+                item.addQuantity();
+            }
         }
 
         return 0;       //返回值为0时表示正确添加
@@ -98,5 +106,11 @@ public class ShoppingChart {
         items.clear();
     }
 
+    public String getUserName() {
+        return userName;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }
